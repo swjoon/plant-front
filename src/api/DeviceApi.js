@@ -36,10 +36,8 @@ export const GetDeviceList = async () => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
-
-    console.log("data: " + response.data) 
+    console.log("data: " + response.data);
     return response.data;
-
   } catch (error) {
     console.log("device 등록 실패: ", error);
     const response = error.response;
@@ -48,23 +46,20 @@ export const GetDeviceList = async () => {
 };
 
 // device 상세 정보 요청
-export const GetDeviceDetail = async(deviceId) => {
-  try{
+export const GetDeviceDetail = async (deviceId) => {
+  try {
     const accessToken = await AsyncStorage.getItem("accessToken");
-
-    const response = await axios.get(apiAddress + "/api/v1/getdevicedetail",
-    deviceId,
-    {
+    const response = await axios.get(apiAddress + "/api/v1/getdevicedetail", {
+      params: {
+        deviceId: deviceId
+      },
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    })
-
+    });
     const data = response.data;
-    console.log(data);
     return data;
-
-  }catch(error){
-    console.log("device 상세정보 api 호출 실패" , error);
+  } catch (error) {
+    console.log("device 상세정보 api 호출 실패", error);
   }
-}
+};

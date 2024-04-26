@@ -6,6 +6,7 @@ import SignupScreen from "../screen/SignupScreen";
 import BottomTabNavigator from "./BottomTabNavigator";
 import AddDeviceScreen from "../screen/AddDeviceScreen";
 import DeviceDetailScreen from "../screen/DeviceDetailScreen";
+import SettingScreen from "../screen/SettingScreen";
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ const Navigation = () => {
                 <Stack.Screen name = "메인화면"  component={BottomTabNavigator} options={{headerShown: false}}/>
                 <Stack.Screen name = "디바이스등록" component={AddDeviceScreen} options={{headerShown: false}}/>
                 <Stack.Screen name = "deviceInfo" component={DeviceDetailScreen} />
+                <Stack.Screen name = "Setting" component={SettingScreen}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
