@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
-import { GetDeviceDetail } from "../api/DeviceApi";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { GetDeviceDetail, GetNowData, SettingLed } from "../api/DeviceApi";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 const DeviceDetailScreen = ({ route, navigation }) => {
   const { deviceId, deviceName } = route.params;
-  console.log(deviceId, deviceName);
   const [tempV, setTempV] = useState(0);
   const [humidityV, setHumidityV] = useState(0);
   const [shumidityV, setShumidity] = useState(0);
-  const [ledV, setLedV] = useState("");
+  const [ledV, setLedV] = useState("OFF");
+
+  const [nowLedV, setNowLedV] = useState(0);
+  const [nowTempV, setNowTempV] = useState(0);
+  const [nowHumidityV, setNowHumidityV] = useState(0);
+  const [nowShumidityV, setNowShumidity] = useState(0); 
 
   useEffect(() => {
-    const fetchData = async (deviceId) => {
+    const fetchData = async () => {
       try {
         const data = await GetDeviceDetail(deviceId);
         setTempV(data.tempV);
@@ -21,19 +24,52 @@ const DeviceDetailScreen = ({ route, navigation }) => {
         setShumidity(data.shumidityV);
         if (data.ledV == 0) setLedV("OFF");
         else setLedV("ON");
-
-        console.log(tempV, humidityV, shumidityV, ledV);
+        const nowdata = await GetNowData(deviceId);
+        setNowLedV(nowdata.ledV);
+        setNowTempV(nowdata.tempV);
+        setNowHumidityV(nowdata.humidityV);
+        setNowShumidity(nowdata.shumidityV);
       } catch (error) {
         console.error("set data 데이터 불러오기 실패");
       }
     };
-    fetchData(deviceId);
+    fetchData();
   }, []);
 
-  const Ledbutton = () => {
-    if (ledV == "OFF") {
-      setLedV("ON");
-    } else setLedV("OFF");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await GetNowData(deviceId);
+        setNowLedV(data.ledV);
+        setNowTempV(data.tempV);
+        setNowHumidityV(data.humidityV);
+        setNowShumidity(data.shumidityV);
+        console.log("data목록: ", data);
+      } catch (error) {
+        console.log("에러:", error);
+      }
+    };
+    const intervalId = setInterval(fetchData, 5000);
+    return () => clearInterval(intervalId);
+  }, [deviceId]);
+
+  const Ledbutton = async () => {
+    try {
+      const data = {
+        deviceId: deviceId,
+        ledV: ledV,
+      };
+      if (ledV === "OFF") {
+        data.ledV = 1;
+      } else {
+        data.ledV = 0;
+      }
+      await SettingLed(data);
+      setLedV(ledV === "OFF" ? "ON" : "OFF");
+      console.log("성공");
+    } catch (error) {
+      console.log("조명 조절 실패:", error);
+    }
   };
 
   return (
@@ -43,22 +79,22 @@ const DeviceDetailScreen = ({ route, navigation }) => {
         <View style={styles.dataItem}></View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>내부 온도</Text>
-          <Text style={styles.nowdata}>현재</Text>
+          <Text style={styles.nowdata}>{nowTempV}</Text>
           <Text style={styles.value}>{tempV} ℃</Text>
         </View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>내부 습도</Text>
-          <Text style={styles.nowdata}>현재</Text>
+          <Text style={styles.nowdata}>{nowHumidityV}</Text>
           <Text style={styles.value}>{humidityV} %</Text>
         </View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>토양 수분</Text>
-          <Text style={styles.nowdata}>현재</Text>
+          <Text style={styles.nowdata}>{nowShumidityV}</Text>
           <Text style={styles.value}>{shumidityV} %</Text>
         </View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>조도</Text>
-          <Text style={styles.nowdata}>현재</Text>
+          <Text style={styles.nowdata}>{nowLedV}</Text>
           <View style={styles.value}>
             <TouchableOpacity style={styles.dataButton} onPress={Ledbutton}>
               <Text style={styles.buttonText}>{ledV}</Text>
@@ -69,7 +105,12 @@ const DeviceDetailScreen = ({ route, navigation }) => {
       <TouchableOpacity
         style={styles.button}
         onPress={() =>
-          navigation.navigate("Setting", { tempV, humidityV, shumidityV })
+          navigation.navigate("Setting", {
+            tempV,
+            humidityV,
+            shumidityV,
+            deviceId,
+          })
         }
       >
         <Text style={styles.buttonText}>설정</Text>

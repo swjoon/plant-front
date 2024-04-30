@@ -1,23 +1,24 @@
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import { SettingData } from "../api/DeviceApi";
 
 const SettingScreen = ({ navigation, route }) => {
-  const { tempV, humidityV, shumidityV } = route.params;
+  const { tempV, humidityV, shumidityV, deviceId } = route.params;
 
   const [cTempV, setcTempV] = useState(tempV);
   const [cHumidityV, setcHumidityV] = useState(humidityV);
   const [cShumidityV, setcShumidity] = useState(shumidityV);
 
-    const updateSetting= () => {
+    const updateSetting= async() => {
         const data = {
+            deviceId: deviceId,
             tempV: cTempV,
             humidityV: cHumidityV,
             shumidityV: cShumidityV
         }
-
         console.log(data);
-
+        await SettingData(data);
         navigation.goBack();
     } 
 
@@ -42,7 +43,7 @@ const SettingScreen = ({ navigation, route }) => {
           <View style={styles.setContainer}>
             <TextInput
               style={styles.value}
-              onChangeText={(text) => setcTempV(text)}
+              onChangeText={(text) => setcHumidityV(text)}
             >
               {humidityV}
             </TextInput>
@@ -54,7 +55,7 @@ const SettingScreen = ({ navigation, route }) => {
           <View style={styles.setContainer}>
             <TextInput
               style={styles.value}
-              onChangeText={(text) => setcTempV(text)}
+              onChangeText={(text) => setcShumidity(text)}
             >
               {shumidityV}
             </TextInput>

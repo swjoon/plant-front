@@ -51,7 +51,7 @@ export const GetDeviceDetail = async (deviceId) => {
     const accessToken = await AsyncStorage.getItem("accessToken");
     const response = await axios.get(apiAddress + "/api/v1/getdevicedetail", {
       params: {
-        deviceId: deviceId
+        deviceId: deviceId,
       },
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -63,3 +63,63 @@ export const GetDeviceDetail = async (deviceId) => {
     console.log("device 상세정보 api 호출 실패", error);
   }
 };
+
+// 임계값 설정
+export const SettingData = async (data) => {
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    const response = await axios.post(
+      apiAddress + `/api/v1/settingdata`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("임계값 업데이트 성공");
+    return response;
+  } catch (error) {
+    console.log("device 상세정보 api 호출 실패", error);
+  }
+};
+
+// 조명설정
+export const SettingLed = async (data) => {
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    const response = await axios.post(
+      apiAddress + `/api/v1/ledV`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("led 업데이트 성공");
+    return 200;
+  } catch (error) {
+    console.log("Led 조절 api 호출 실패", error);
+    return error;
+  }
+};
+
+// now 데이터 불러오기
+export const GetNowData = async(deviceId)=>{
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    const response = await axios.get(apiAddress + "/api/v1/sensor/nowdata", {
+      params: {
+        deviceId: deviceId,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = response.data;
+    return data;
+  } catch (error) {
+    console.log("now Data api 호출 실패", error);
+  }
+}
