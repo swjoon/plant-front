@@ -7,6 +7,7 @@ import BottomTabNavigator from "./BottomTabNavigator";
 import AddDeviceScreen from "../screen/AddDeviceScreen";
 import DeviceDetailScreen from "../screen/DeviceDetailScreen";
 import SettingScreen from "../screen/SettingScreen";
+import BoardDetailScreen from "../screen/BoardDetailScreen";
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ const Navigation = () => {
                 <Stack.Screen name = "디바이스등록" component={AddDeviceScreen} options={{headerShown: false}}/>
                 <Stack.Screen name = "deviceInfo" component={DeviceDetailScreen} />
                 <Stack.Screen name = "Setting" component={SettingScreen}/>
+                <Stack.Screen name = "게시판" component={BoardDetailScreen}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

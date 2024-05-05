@@ -34,6 +34,7 @@ const MainScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.divider} /> 
       <FlatList
         data={deviceList}
         keyExtractor={(item, index) => index.toString()}
@@ -67,7 +68,13 @@ const MainScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor:"#fff",
     padding: 10,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 20,
   },
   deviceItem: {
     flexDirection: "row",
