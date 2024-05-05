@@ -13,11 +13,11 @@ const SettingScreen = ({ navigation, route }) => {
     const updateSetting= async() => {
         const data = {
             deviceId: deviceId,
+            ledV: 0,
             tempV: cTempV,
             humidityV: cHumidityV,
             shumidityV: cShumidityV
         }
-        console.log(data);
         await SettingData(data);
         navigation.goBack();
     } 

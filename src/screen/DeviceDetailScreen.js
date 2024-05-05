@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
 import { GetDeviceDetail, GetNowData, SettingLed } from "../api/DeviceApi";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { useIsFocused } from '@react-navigation/native';
 
 const DeviceDetailScreen = ({ route, navigation }) => {
   const { deviceId, deviceName } = route.params;
@@ -14,17 +15,18 @@ const DeviceDetailScreen = ({ route, navigation }) => {
   const [nowTempV, setNowTempV] = useState(0);
   const [nowHumidityV, setNowHumidityV] = useState(0);
   const [nowShumidityV, setNowShumidity] = useState(0); 
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await GetDeviceDetail(deviceId);
+        const nowdata = await GetNowData(deviceId);
         setTempV(data.tempV);
         setHumidityV(data.humidityV);
         setShumidity(data.shumidityV);
         if (data.ledV == 0) setLedV("OFF");
         else setLedV("ON");
-        const nowdata = await GetNowData(deviceId);
         setNowLedV(nowdata.ledV);
         setNowTempV(nowdata.tempV);
         setNowHumidityV(nowdata.humidityV);
@@ -34,7 +36,7 @@ const DeviceDetailScreen = ({ route, navigation }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     const fetchData = async () => {
