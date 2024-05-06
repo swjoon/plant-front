@@ -8,6 +8,7 @@ import AddDeviceScreen from "../screen/AddDeviceScreen";
 import DeviceDetailScreen from "../screen/DeviceDetailScreen";
 import SettingScreen from "../screen/SettingScreen";
 import BoardDetailScreen from "../screen/BoardDetailScreen";
+import BoardAddScreen from "../screen/BoardAddScreen";
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const Navigation = () => {
                 <Stack.Screen name = "deviceInfo" component={DeviceDetailScreen} />
                 <Stack.Screen name = "Setting" component={SettingScreen}/>
                 <Stack.Screen name = "게시판" component={BoardDetailScreen}/>
+                <Stack.Screen name = "글쓰기" component={BoardAddScreen} options={{headerShown: false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

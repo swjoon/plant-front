@@ -39,7 +39,7 @@ const BoardScreen = ({ navigation }) => {
    return (
     <View style={styles.container}>
       <View style={styles.addButtonContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate("글작성")}>
+        <TouchableOpacity onPress={() => navigation.navigate("글쓰기")}>
           <AntDesign name="pluscircleo" size={24} color="black" style={styles.addButton} />
         </TouchableOpacity>
       </View>

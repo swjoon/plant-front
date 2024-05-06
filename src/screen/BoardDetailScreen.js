@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
 
 const BoardDetailScreen = () => {
   return (
