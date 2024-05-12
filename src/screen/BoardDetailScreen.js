@@ -8,12 +8,16 @@ import {
   StyleSheet,
 } from "react-native";
 
-const BoardDetailScreen = () => {
+const BoardDetailScreen = ({ navigation, route }) => {
+  const [nickName, createdDate, commentCount] = route.params;
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <Text style={styles.title}>test</Text>
-        <Text style={styles.info}>작성자: shim | 등록일: 2024-05-02</Text>
+        <Text style={styles.info}>
+          작성자: {nickName} | 등록일: {createdDate}
+        </Text>
         <Text style={styles.body}>test</Text>
         <View style={styles.divider} />
         <Text style={styles.commentTitle}>댓글</Text>

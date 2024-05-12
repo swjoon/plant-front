@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,52 +6,53 @@ import {
   FlatList,
   StyleSheet,
 } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
+import { useIsFocused } from "@react-navigation/native";
+import { getBoard } from "../api/BoradApi";
 
 const BoardScreen = ({ navigation }) => {
-  const data = [
-    {
-      id: 1,
-      title: "test",
-      author: "shim",
-      date: "2024-05-02",
-      comments: 0,
-    },
-    {
-      id: 2,
-      title: "test2",
-      author: "shim",
-      date: "2024-05-02",
-      comments: 0,
-    },
-    // Add more sample data as needed
-  ];
+  const [data, setData] = useState([]);
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getBoard();
+        setData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("set data 데이터 불러오기 실패", error);
+      }
+    };
+    fetchData();
+  }, [isFocused]);
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.itemContainer}>
+    <TouchableOpacity
+      style={styles.itemContainer}
+      onPress={() => navigation.navigate("게시판",{ no: item.no, nickName: item.nickName, commentcount: item.commentCount})}
+    >
       <Text style={styles.itemTitle}>{item.title}</Text>
       <Text
         style={styles.itemInfo}
-      >{`작성자: ${item.author} | 작성일: ${item.date} | 댓글: ${item.comments}`}</Text>
+      >{`작성자: ${item.nickName} | 작성일: ${item.createdDate} | 댓글: ${item.commentCount}`}</Text>
     </TouchableOpacity>
   );
 
-   return (
+  return (
     <View style={styles.container}>
       <View style={styles.addButtonContainer}>
         <TouchableOpacity onPress={() => navigation.navigate("글쓰기")}>
-          <AntDesign name="pluscircleo" size={24} color="black" style={styles.addButton} />
+          <AntDesign
+            name="pluscircleo"
+            size={24}
+            color="black"
+            style={styles.addButton}
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.divider} />
-      <FlatList
-        data={data}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
-      <TouchableOpacity onPress={() => navigation.navigate("게시판")}>
-        <Text>디테일</Text>
-      </TouchableOpacity>
+      <FlatList data={data} renderItem={renderItem} />
     </View>
   );
 };
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   addButtonContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     right: 20,
     zIndex: 1, // 다른 요소 위로 올라오도록 설정

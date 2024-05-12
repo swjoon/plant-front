@@ -10,10 +10,10 @@ import {
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { SignUp } from "../api/UserApi";
 
-const SignupScreen = ({navigation}) => {
+const SignupScreen = ({ navigation }) => {
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
-
+  const [fail, setFail] = useState(true);
   const [userInfo, setUserInfo] = useState({
     userId: "",
     userPw: "",
@@ -32,7 +32,7 @@ const SignupScreen = ({navigation}) => {
     setIsEmailValid(isValid);
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!isEmailValid) {
       Alert.alert("유효하지 않은 이메일 형식입니다.");
       return;
@@ -51,13 +51,16 @@ const SignupScreen = ({navigation}) => {
       birth: parsebirth,
     };
 
-    SignUp(userData);
+    const response = await SignUp(userData);
 
-    navigation.reset({
-      index:0,
-      routes: [{ name: "로그인"}]
-    })
-
+    if (response.status === 200) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "로그인" }],
+      });
+    } else {
+      setFail(false);
+    }
   };
 
   return (
@@ -71,6 +74,7 @@ const SignupScreen = ({navigation}) => {
           onBlur={handleCheckEmailFormat} // 포커스가 빠져나가면 이메일 형식 검사
         />
       </View>
+      {!fail && <Text style={styles.errorText}>이미 가입된 아이디입니다.</Text>}
       {!isEmailValid && (
         <Text style={styles.errorText}>유효하지 않은 이메일 형식입니다.</Text>
       )}

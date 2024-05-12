@@ -123,7 +123,3 @@ export const GetNowData = async(deviceId)=>{
     console.log("now Data api 호출 실패", error);
   }
 }
-
-export const board = async() =>{
-  
-}

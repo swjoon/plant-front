@@ -7,13 +7,21 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { setBoard } from "../api/BoradApi";
 
 const BoardAddScreen = ({ navigation }) => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
 
-  const handleSubmit = () => {
-
+  const handleSubmit = async () => {
+    try {
+      const data = {
+        title: title,
+        content: body,
+      };
+      await setBoard(data);
+      navigation.goBack();
+    } catch (error) {}
   };
 
   return (
@@ -31,13 +39,13 @@ const BoardAddScreen = ({ navigation }) => {
         style={styles.input}
         placeholder="제목을 입력하세요"
         value={title}
-        onChangeText={setTitle}
+        onChangeText={(text) => setTitle(text)}
       />
       <TextInput
         style={[styles.input, styles.bodyInput]}
         placeholder="내용을 입력하세요"
         value={body}
-        onChangeText={setBody}
+        onChangeText={(text) => setBody(text)}
         multiline
       />
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -61,7 +69,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 30,
+    marginTop: "18%",
     marginBottom: 20,
   },
   input: {
@@ -72,7 +80,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   bodyInput: {
-    height: 200,
+    height: "40%",
     textAlignVertical: "top",
   },
   submitButton: {
