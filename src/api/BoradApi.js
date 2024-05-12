@@ -38,3 +38,48 @@ export const getBoard = async () => {
     return response;
   }
 };
+
+export const getBoardDetail = async (no) => {
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    const response = await axios.get(apiAddress + "/api/v1/board/detail", {
+      params: {
+        no: no,
+      },
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    console.log("게시판 불러오기 성공 ", response.data);
+    return response;
+  } catch (error) {
+    console.log("게시판 불러오기 실패: ", error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const postComment = async (data) => {
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    const response = await axios.post(
+      apiAddress + "/api/v1/board/comment",
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    console.log("댓글 작성 성공 ", response.data);
+    return response;
+  } catch (error) {
+    console.log("댓글 작성 실패: ", error);
+    const response = error.response;
+    return response;
+  }
+};

@@ -27,10 +27,22 @@ const BoardScreen = ({ navigation }) => {
     fetchData();
   }, [isFocused]);
 
+  const navigationDetail = ({ no, nickName, createdDate, commentCount }) => {
+    console.log(no, nickName, createdDate, commentCount);
+    navigation.navigate("게시판", { no, nickName, createdDate, commentCount });
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => navigation.navigate("게시판",{ no: item.no, nickName: item.nickName, commentcount: item.commentCount})}
+      onPress={() =>
+        navigationDetail({
+          no: item.no,
+          nickName: item.nickName,
+          createdDate: item.createdDate,
+          commentCount: item.commentCount,
+        })
+      }
     >
       <Text style={styles.itemTitle}>{item.title}</Text>
       <Text
