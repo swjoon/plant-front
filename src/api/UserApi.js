@@ -31,17 +31,12 @@ export const Login = async (loginData, { navigation }) => {
     let userId = loginData.userId;
 
     await AsyncStorage.setItem("userId", userId);
+    await AsyncStorage.setItem("nickName", data.nickName);
+    await AsyncStorage.setItem("role", data.role);
     await AsyncStorage.setItem("accessToken", data.accessToken);
     await AsyncStorage.setItem("refreshToken", data.refreshToken);
-    console.log(
-      "userID: " +
-        userId +
-        "\naccessToken: " +
-        data.accessToken +
-        "\nrefreshToken: " +
-        data.refreshToken
-    );
-
+   
+    console.log(AsyncStorage.getItem("nickName"))
     navigation.reset({
       index: 0,
       routes: [{ name: "메인화면" }],

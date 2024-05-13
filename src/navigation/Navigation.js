@@ -22,7 +22,7 @@ const Navigation = () => {
                 <Stack.Screen name = "디바이스등록" component={AddDeviceScreen} options={{headerShown: false}}/>
                 <Stack.Screen name = "deviceInfo" component={DeviceDetailScreen} />
                 <Stack.Screen name = "Setting" component={SettingScreen}/>
-                <Stack.Screen name = "게시판" component={BoardDetailScreen}/>
+                <Stack.Screen name = "게시판" component={BoardDetailScreen} options={{headerShown: false}}/>
                 <Stack.Screen name = "글쓰기" component={BoardAddScreen} options={{headerShown: false}}/>
             </Stack.Navigator>
         </NavigationContainer>
