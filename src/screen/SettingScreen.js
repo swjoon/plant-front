@@ -2,30 +2,47 @@ import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { SettingData } from "../api/DeviceApi";
+import { AntDesign } from "@expo/vector-icons";
 
 const SettingScreen = ({ navigation, route }) => {
-  const { tempV, humidityV, shumidityV, deviceId } = route.params;
-
+  const { deviceName, tempV, humidityV, shumidityV, deviceId } = route.params;
+  const [cDeviceName, setDeviceName] = useState(deviceName);
   const [cTempV, setcTempV] = useState(tempV);
   const [cHumidityV, setcHumidityV] = useState(humidityV);
   const [cShumidityV, setcShumidity] = useState(shumidityV);
 
-    const updateSetting= async() => {
-        const data = {
-            deviceId: deviceId,
-            ledV: 0,
-            tempV: cTempV,
-            humidityV: cHumidityV,
-            shumidityV: cShumidityV
-        }
-        await SettingData(data);
-        navigation.goBack();
-    } 
+  const updateSetting = async () => {
+    const data = {
+      deviceId: deviceId,
+      deviceName: cDeviceName,
+      ledV: 0,
+      tempV: cTempV,
+      humidityV: cHumidityV,
+      shumidityV: cShumidityV,
+    };
+    await SettingData(data);
+    navigation.goBack();
+  };
 
   return (
     <View style={styles.container}>
+      <View style={styles.addButtonContainer}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => setDeviceName(text)}
+        >
+          {deviceName}
+        </TextInput>
+      </View>
       <View style={styles.dataContainer}>
-        <View style={styles.dataItem} />
         <View style={styles.dataItem}>
           <Text style={styles.label}>내부 온도</Text>
           <View style={styles.setContainer}>
@@ -63,10 +80,7 @@ const SettingScreen = ({ navigation, route }) => {
           </View>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={updateSetting}
-      >
+      <TouchableOpacity style={styles.button} onPress={updateSetting}>
         <Text style={styles.buttonText}>확인</Text>
       </TouchableOpacity>
     </View>
@@ -79,6 +93,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     padding: 10,
+  },
+  addButtonContainer: {
+    position: "absolute",
+    top: 60,
+    left: 20,
+  },
+  inputContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingHorizontal: 20,
+    marginTop: "30%",
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 10,
+    paddingRight: 20,
+    paddingLeft: 20,
+    fontSize: 16,
+    borderWidth: 1,
+  },
+  screenTitle: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   dataContainer: {
     marginTop: 40,

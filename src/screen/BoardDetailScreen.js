@@ -9,11 +9,11 @@ import {
   FlatList,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { getBoardDetail, getComment, postComment } from "../api/BoradApi";
+import { boardDelete, commentDelete, getBoardDetail, getComment, postComment } from "../api/BoradApi";
 import { AntDesign } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const RenderItem = ({ item, index, saveNickName, handleDelete }) => {
+const RenderItem = ({ item, role, saveNickName, handleCommentDelete }) => {
   const [showCommentOptions, setShowCommentOptions] = useState(false);
 
   const handleToggleCommentOptions = () => {
@@ -37,10 +37,10 @@ const RenderItem = ({ item, index, saveNickName, handleDelete }) => {
         <Text style={styles.itemInfo}>{`${item.content}`}</Text>
         {showCommentOptions && (
           <View style={styles.commentOptions}>
-            {item.nickName == saveNickName && (
+            {(item.nickName == saveNickName || role == "ADMIN") && (
               <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => handleDelete(index)}
+                onPress={() => handleCommentDelete(item.no)}
               >
                 <Text style={styles.deleteButtonText}>삭제</Text>
               </TouchableOpacity>
@@ -95,8 +95,26 @@ const BoardDetailScreen = ({ route, navigation }) => {
     }
   };
 
-  const handleDelete = async (index) => {
-    // 삭제 처리 로직 구현
+  const handleBoardUpdate = async (no, boardTitle, boardBody) => {
+    navigation.navigate("글수정", {no , boardTitle, boardBody});
+  }
+
+  const handleBoardDelete = async (no) => {
+    try {
+      await boardDelete(no);
+      navigation.goBack();
+    } catch (error) {
+      console.error("댓글 삭제 실패", error);
+    }
+  }
+
+  const handleCommentDelete = async (no) => {
+    try {
+      await commentDelete(no);
+      fetchData();
+    } catch (error) {
+      console.error("댓글 삭제 실패", error);
+    }
   };
 
   useEffect(() => {
@@ -139,12 +157,12 @@ const BoardDetailScreen = ({ route, navigation }) => {
         <Text style={styles.commentTitle}>댓글</Text>
         <FlatList
           data={commentList}
-          renderItem={({ item, index }) => (
+          renderItem={({ item }) => (
             <RenderItem
               item={item}
-              index={index}
+              role={Role}
               saveNickName={saveNickName}
-              handleDelete={handleDelete}
+              handleCommentDelete={handleCommentDelete}
             />
           )}
           contentContainerStyle={styles.commentList}
@@ -152,18 +170,18 @@ const BoardDetailScreen = ({ route, navigation }) => {
       </View>
       {showOptions && (
         <View style={styles.optionContainer}>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.optionButton}
             onPress={() => setShowOptions(!showOptions)} // 수정된 부분
           >
             <Text>신고</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {boardEqual && (
             <View>
-              <TouchableOpacity style={styles.optionButton}>
+              <TouchableOpacity style={styles.optionButton} onPress={() => handleBoardUpdate(no , data.title, data.content)}>
                 <Text>수정</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.optionButton}>
+              <TouchableOpacity style={styles.optionButton} onPress={() => handleBoardDelete(no)}>
                 <Text>삭제</Text>
               </TouchableOpacity>
             </View>
@@ -177,7 +195,10 @@ const BoardDetailScreen = ({ route, navigation }) => {
           onChangeText={(text) => setComment(text)}
           value={comment}
         />
-        <TouchableOpacity style={styles.commentPostButton} onPress={handleSubmit}>
+        <TouchableOpacity
+          style={styles.commentPostButton}
+          onPress={handleSubmit}
+        >
           <Text style={styles.commentButtonText}>등록</Text>
         </TouchableOpacity>
       </View>
@@ -320,8 +341,8 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "#fff",
     borderRadius: 8,
-    borderWidth: 1, 
-    borderColor: "black", 
+    borderWidth: 1,
+    borderColor: "black",
   },
   deleteButtonText: {
     fontSize: 16,

@@ -9,9 +9,11 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 
 const MainScreen = ({ navigation }) => {
   const [deviceList, setDeviceList] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,11 +27,11 @@ const MainScreen = ({ navigation }) => {
     };
 
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   // 상세페이지
-  const navigateToDeviceDetail = ({ deviceId, deviceName }) => {
-    navigation.navigate("deviceInfo", { deviceId, deviceName });
+  const navigateToDeviceDetail = ({ deviceId }) => {
+    navigation.navigate("deviceInfo", { deviceId });
   };
 
   return (

@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Button, FlatList } from "react-native";
-import { GetDeviceDetail, GetNowData, SettingLed } from "../api/DeviceApi";
+import { DeviceDelete, GetDeviceDetail, GetNowData, SettingLed } from "../api/DeviceApi";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
 
 const DeviceDetailScreen = ({ route, navigation }) => {
-  const { deviceId, deviceName } = route.params;
+  const [showOptions, setShowOptions] = useState(false);
+  const {deviceId} = route.params;
   const [tempV, setTempV] = useState(0);
   const [humidityV, setHumidityV] = useState(0);
   const [shumidityV, setShumidity] = useState(0);
   const [ledV, setLedV] = useState("OFF");
-
+  const [deviceName, setDeviceName] = useState("")
   const [nowLedV, setNowLedV] = useState(0);
   const [nowTempV, setNowTempV] = useState(0);
   const [nowHumidityV, setNowHumidityV] = useState(0);
-  const [nowShumidityV, setNowShumidity] = useState(0); 
+  const [nowShumidityV, setNowShumidity] = useState(0);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const DeviceDetailScreen = ({ route, navigation }) => {
       try {
         const data = await GetDeviceDetail(deviceId);
         const nowdata = await GetNowData(deviceId);
+        setDeviceName(data.deviceName);
         setTempV(data.tempV);
         setHumidityV(data.humidityV);
         setShumidity(data.shumidityV);
@@ -53,7 +56,7 @@ const DeviceDetailScreen = ({ route, navigation }) => {
     };
     const intervalId = setInterval(fetchData, 5000);
     return () => clearInterval(intervalId);
-  }, [deviceId]);
+  }, [isFocused]);
 
   const Ledbutton = async () => {
     try {
@@ -73,10 +76,36 @@ const DeviceDetailScreen = ({ route, navigation }) => {
       console.log("조명 조절 실패:", error);
     }
   };
+  
+  const deleteButton = async (deviceId) => {
+    try{
+      await DeviceDelete(deviceId);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "메인화면" }],
+      });
+    }catch(error){
+      console.log("오류")
+    }
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{deviceName}</Text>
+      <View style={styles.addButtonContainer}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <AntDesign name="arrowleft" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.screenTitle}>{deviceName}</Text>
+        <TouchableOpacity
+          style={styles.listButton}
+          onPress={() => setShowOptions(!showOptions)}
+        >
+          <AntDesign name="ellipsis1" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <View style={styles.dataContainer}>
         <View style={styles.dataItem}></View>
         <View style={styles.dataItem}>
@@ -108,6 +137,7 @@ const DeviceDetailScreen = ({ route, navigation }) => {
         style={styles.button}
         onPress={() =>
           navigation.navigate("Setting", {
+            deviceName,
             tempV,
             humidityV,
             shumidityV,
@@ -117,6 +147,13 @@ const DeviceDetailScreen = ({ route, navigation }) => {
       >
         <Text style={styles.buttonText}>설정</Text>
       </TouchableOpacity>
+      {showOptions && (
+        <View style={styles.optionContainer}>
+          <TouchableOpacity style={styles.optionButton} onPress={() => deleteButton(deviceId)}>
+            <Text>등록 해제</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 };
@@ -128,6 +165,23 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     padding: 10,
   },
+  addButtonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    marginTop: "12%",
+    marginBottom: "12%",
+  },
+  backButton: {},
+  screenTitle: {
+    flex: 1,
+    fontSize: 20,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  listButton: {},
   dataContainer: {
     marginTop: 40,
     width: "100%",
@@ -189,6 +243,20 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     paddingVertical: 5,
+  },
+  optionContainer: {
+    position: "absolute",
+    top: 100,
+    right: 10,
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    elevation: 3,
+  },
+  optionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
 });
 

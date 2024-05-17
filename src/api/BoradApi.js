@@ -28,16 +28,38 @@ export const getBoard = async () => {
     const response = await axios.get(apiAddress + "/api/v1/board/", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    console.log("게시판 불러오기 성공 ", response.data);
-    return response;
-  } catch (error) {
+    },
+});
+console.log("게시판 불러오기 성공 ", response.data);
+return response;
+} catch (error) {
     console.log("게시판 불러오기 실패: ", error);
     const response = error.response;
     return response;
-  }
+}
 };
+
+export const boardDelete = async (no) => {
+    try {
+      const accessToken = await AsyncStorage.getItem("accessToken");
+      console.log(no);
+      const response = await axios.post(
+        apiAddress + "/api/v1/board/delete",
+        { no: no },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      console.log("게시판 삭제 성공 ", response.data);
+      return response;
+    } catch (error) {
+      console.log("게시판 삭제 실패: ", error);
+      const response = error.response;
+      return response;
+    }
+  };
 
 export const getBoardDetail = async (no) => {
   try {
@@ -105,3 +127,44 @@ export const postComment = async (data) => {
     return response;
   }
 };
+
+export const commentDelete = async (no) => {
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    console.log(no);
+    const response = await axios.post(
+      apiAddress + "/api/v1/board/comment/delete",
+      { no: no },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("댓글 삭제 성공 ", response.data);
+    return response;
+  } catch (error) {
+    console.log("댓글 삭제 실패: ", error);
+    const response = error.response;
+    return response;
+  }
+};
+
+export const UpdateBoard = async (No,data) => {
+  console.log(No, data)
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+    console.log(data);
+    const response = await axios.put(apiAddress + `/api/v1/board/post?No=${No}`, data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    console.log("게시판 등록 성공 ", response.data);
+    return response;
+  } catch (error) {
+    console.log("게시판 등록 실패: ", error);
+    const response = error.response;
+    return response;
+  }
+}

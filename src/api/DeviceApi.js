@@ -39,7 +39,7 @@ export const GetDeviceList = async () => {
     console.log("data: " + response.data);
     return response.data;
   } catch (error) {
-    console.log("device 등록 실패: ", error);
+    console.log("device 목록 불러오기 실패: ", error);
     const response = error.response;
     return response;
   }
@@ -88,15 +88,11 @@ export const SettingData = async (data) => {
 export const SettingLed = async (data) => {
   try {
     const accessToken = await AsyncStorage.getItem("accessToken");
-    const response = await axios.post(
-      apiAddress + `/api/v1/ledV`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
+    const response = await axios.post(apiAddress + `/api/v1/ledV`, data, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     console.log("led 업데이트 성공");
     return 200;
   } catch (error) {
@@ -106,7 +102,7 @@ export const SettingLed = async (data) => {
 };
 
 // now 데이터 불러오기
-export const GetNowData = async(deviceId)=>{
+export const GetNowData = async (deviceId) => {
   try {
     const accessToken = await AsyncStorage.getItem("accessToken");
     const response = await axios.get(apiAddress + "/api/v1/sensor/nowdata", {
@@ -122,4 +118,27 @@ export const GetNowData = async(deviceId)=>{
   } catch (error) {
     console.log("now Data api 호출 실패", error);
   }
-}
+};
+
+export const DeviceDelete = async (deviceId) => {
+  console.log(deviceId);
+  try {
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    const response = await axios.post(
+      apiAddress + `/api/v1/device`,
+      { deviceId: deviceId },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log("device 삭제 성공: ", response.data);
+    return response;
+  } catch (error) {
+    console.log("device 삭제 실패: ", error);
+    const response = error.response;
+    return response;
+  }
+};
