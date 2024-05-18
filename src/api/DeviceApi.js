@@ -1,7 +1,7 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const apiAddress = "http://192.168.219.101:8080";
+const apiAddress = "http://13.209.40.78:8080";
 
 // device 등록
 export const DeviceSignup = async (deviceData) => {
