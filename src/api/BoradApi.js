@@ -1,7 +1,8 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Address from "./config";
 
-const apiAddress = "http://13.209.40.78:8080";
+const apiAddress = Address;
 
 export const setBoard = async (data) => {
   try {

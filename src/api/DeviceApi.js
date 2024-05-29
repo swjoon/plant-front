@@ -1,8 +1,8 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Address from "./config";
 
-const apiAddress = "http://13.209.40.78:8080";
-
+const apiAddress = Address;
 // device 등록
 export const DeviceSignup = async (deviceData) => {
   try {
@@ -104,7 +104,8 @@ export const SettingLed = async (data) => {
 // now 데이터 불러오기
 export const GetNowData = async (deviceId) => {
   try {
-    const accessToken = await AsyncStorage.getItem("accessToken");
+    const accessToken = await AsyncStorage.getItem("accessToken"); 
+
     const response = await axios.get(apiAddress + "/api/v1/sensor/nowdata", {
       params: {
         deviceId: deviceId,

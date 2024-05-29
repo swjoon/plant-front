@@ -26,7 +26,7 @@ const BottomTabNavigator = () =>{
             <Entypo name="blackboard" size={24} color={"black"} />
           ),
         }}/>
-      <BottomTab.Screen name="userinfo" component={UserScreen} options={{
+      <BottomTab.Screen name="내정보" component={UserScreen} options={{
           tabBarIcon: ({ color, size }) => (
             <Entypo name="user" size={24} color={"black"} />
           ),

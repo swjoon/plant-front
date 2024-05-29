@@ -20,7 +20,7 @@ const SignupScreen = ({ navigation }) => {
     username: "",
     nickname: "",
     birth: null,
-  });
+  }); 
 
   const handleInputChange = (key, value) => {
     setUserInfo({ ...userInfo, [key]: value });

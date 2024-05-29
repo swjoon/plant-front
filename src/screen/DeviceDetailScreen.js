@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { DeviceDelete, GetDeviceDetail, GetNowData, SettingLed } from "../api/DeviceApi";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useIsFocused } from "@react-navigation/native";
@@ -30,6 +30,7 @@ const DeviceDetailScreen = ({ route, navigation }) => {
         setShumidity(data.shumidityV);
         if (data.ledV == 0) setLedV("OFF");
         else setLedV("ON");
+        console.log(nowdata);
         setNowLedV(nowdata.ledV);
         setNowTempV(nowdata.tempV);
         setNowHumidityV(nowdata.humidityV);
@@ -110,17 +111,17 @@ const DeviceDetailScreen = ({ route, navigation }) => {
         <View style={styles.dataItem}></View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>내부 온도</Text>
-          <Text style={styles.nowdata}>{nowTempV}</Text>
+          <Text style={styles.nowdata}>{nowTempV} ℃</Text>
           <Text style={styles.value}>{tempV} ℃</Text>
         </View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>내부 습도</Text>
-          <Text style={styles.nowdata}>{nowHumidityV}</Text>
+          <Text style={styles.nowdata}>{nowHumidityV} %</Text>
           <Text style={styles.value}>{humidityV} %</Text>
         </View>
         <View style={styles.dataItem}>
           <Text style={styles.label}>토양 수분</Text>
-          <Text style={styles.nowdata}>{nowShumidityV}</Text>
+          <Text style={styles.nowdata}>{nowShumidityV} %</Text>
           <Text style={styles.value}>{shumidityV} %</Text>
         </View>
         <View style={styles.dataItem}>

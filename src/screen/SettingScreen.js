@@ -20,6 +20,7 @@ const SettingScreen = ({ navigation, route }) => {
       humidityV: cHumidityV,
       shumidityV: cShumidityV,
     };
+    console.log(data);
     await SettingData(data);
     navigation.goBack();
   };
